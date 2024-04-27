@@ -1,0 +1,47 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Predict Purchase Decision</h1>
+    <form action="/predict" method="POST">
+        <label for="Gender">Gender:</label>
+        <select name="Gender" id="Gender">
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+        </select><br>
+        <label for="Age">Age:</label>
+        <input type="number" name="Age" id="Age" min="18" required><br>
+        <label for="EstimatedSalary">Estimated Income:</label>
+        <input type="number" name="EstimatedSalary" id="EstimatedSalary" min="0" required><br>
+        <button type="submit">Predict</button>
+    </form>
+    <p id="prediction"></p>
+    <script>
+        const predictionElement = document.getElementById('prediction');
+        const form = document.querySelector('form');
+
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const formData = new FormData(form); // Create FormData object
+            fetch('/predict', {
+                method: 'POST',
+                body: new FormData(form)
+            })
+            .then(response => response.json())
+            .then(data => {
+                predictionElement.textContent = `prediction: ${data.prediction}`;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                predictionElement.textContent = 'An error occurred. Please try again.';
+            });
+        });
+    </script>
+</body>
+</html>
